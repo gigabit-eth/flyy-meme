@@ -1,4 +1,4 @@
-// Stock data interfaces for Alpha Vantage API
+// Stock data interfaces for Yahoo Finance API
 export interface StockQuote {
   symbol: string;
   price: number;
@@ -25,21 +25,7 @@ export interface CryptoData {
   holders: number;
 }
 
-// Alpha Vantage API response interfaces
-export interface AlphaVantageQuote {
-  'Global Quote': {
-    '01. symbol': string;
-    '02. open': string;
-    '03. high': string;
-    '04. low': string;
-    '05. price': string;
-    '06. volume': string;
-    '07. latest trading day': string;
-    '08. previous close': string;
-    '09. change': string;
-    '10. change percent': string;
-  };
-}
+
 
 // Card data interface for dashboard
 export interface CardData {
