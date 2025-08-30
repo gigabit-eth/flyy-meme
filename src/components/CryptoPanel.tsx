@@ -134,7 +134,7 @@ export default function CryptoPanel({
         <div className="text-black text-sm uppercase tracking-wide opacity-70 mb-4">
           Market Capitalization (FDV)
         </div>
-        <div className="text-black text-8xl font-bold fugaz-one-regular">
+        <div className="text-black text-6xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold fugaz-one-regular">
           {formatCurrency(poolData.fdvUsd)}
         </div>
       </div>
@@ -151,16 +151,16 @@ export default function CryptoPanel({
       </div>
 
       {/* Additional Stats */}
-      <div className="space-y-3 text-sm mb-8">
+      <div className="space-y-4 text-base sm:text-lg md:text-xl mb-8">
         <div className="flex justify-between">
           <span className="text-black opacity-70">24H VOL:</span>
-          <span className="text-black font-mono font-medium">
+          <span className="text-black font-mono font-semibold">
             {formatCurrency(poolData.volumeUsd.h24)}
           </span>
         </div>
         <div className="flex justify-between">
           <span className="text-black opacity-70">24H TRADES:</span>
-          <span className="text-black font-mono font-medium">
+          <span className="text-black font-mono font-semibold">
             {formatNumber(
               poolData.transactions.h24.buys + poolData.transactions.h24.sells
             )}
@@ -168,13 +168,13 @@ export default function CryptoPanel({
         </div>
         <div className="flex justify-between">
           <span className="text-black opacity-70">1H BUYS:</span>
-          <span className="text-black font-mono font-medium">
+          <span className="text-black font-mono font-semibold">
             {formatNumber(poolData.transactions.h1.buys)}
           </span>
         </div>
         <div className="flex justify-between">
           <span className="text-black opacity-70">1H SELLS:</span>
-          <span className="text-black font-mono font-medium">
+          <span className="text-black font-mono font-semibold">
             {formatNumber(poolData.transactions.h1.sells)}
           </span>
         </div>
