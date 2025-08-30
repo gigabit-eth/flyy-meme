@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from "react";
 import SplitDashboard from "@/components/SplitDashboard";
-import { CardData, StockQuote, CryptoData, ApiResponse } from "@/types";
+import { CardData, StockQuote, ApiResponse } from "@/types";
 
 export default function Home() {
   const [stockData, setStockData] = useState<CardData | null>(null);
-  const [cryptoData, setCryptoData] = useState<CardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>("");
@@ -72,39 +71,13 @@ export default function Home() {
     }
   };
 
-  const fetchCryptoData = async () => {
-    try {
-      const response = await fetch("/api/crypto/FLYY");
-      const result: ApiResponse<CryptoData> = await response.json();
 
-      if (result.success && result.data) {
-        const crypto = result.data;
-        setCryptoData({
-          type: "crypto",
-          symbol: "FLYY",
-          name: "Spirit Aviation Holdings",
-          exchange: "Crypto",
-          marketCap: "$1.2M",
-          price: `$${crypto.price.toFixed(4)}`,
-          change: `$${crypto.change.toFixed(4)}`,
-          changePercent: `${crypto.changePercent.toFixed(2)}`,
-          dayHigh: `$${crypto.dayHigh.toFixed(4)}`,
-          dayLow: `$${crypto.dayLow.toFixed(4)}`,
-          volume: `$${(crypto.volume / 1000000).toFixed(0)}M`,
-          additionalInfo: `${(crypto.holders / 1000).toFixed(0)}K`,
-          isLive: true,
-        });
-      }
-    } catch (err) {
-      console.error("Failed to fetch crypto data:", err);
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        await Promise.all([fetchStockData(), fetchCryptoData()]);
+        await fetchStockData();
         setLastUpdated(new Date().toLocaleTimeString());
       } catch (err) {
         setError("Failed to load data");
@@ -123,7 +96,6 @@ export default function Home() {
   return (
     <SplitDashboard 
       stockData={stockData}
-      cryptoData={cryptoData}
       loading={loading}
       error={error}
       lastUpdated={lastUpdated}

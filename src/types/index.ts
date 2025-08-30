@@ -51,6 +51,34 @@ export interface CardData {
   isLive: boolean;
 }
 
+// Pools API data interface
+export interface PoolData {
+  fdvUsd: number;
+  baseTokenPriceUsd: number;
+  priceChangePercentage: {
+    h24: number;
+  };
+  transactions: {
+    h24: {
+      buys: number;
+      sells: number;
+    };
+  };
+  volumeUsd: {
+    h24: number;
+  };
+  name: string;
+  address: string;
+  baseToken: {
+    name: string;
+    symbol: string;
+  };
+  quoteToken: {
+    name: string;
+    symbol: string;
+  };
+}
+
 // API response wrapper
 export interface ApiResponse<T> {
   success: boolean;

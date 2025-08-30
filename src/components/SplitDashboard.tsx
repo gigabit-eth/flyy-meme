@@ -7,7 +7,6 @@ import BrandHeader from "./BrandHeader";
 
 interface SplitDashboardProps {
   stockData: CardData | null;
-  cryptoData: CardData | null;
   loading?: boolean;
   error?: string | null;
   lastUpdated?: string;
@@ -15,7 +14,6 @@ interface SplitDashboardProps {
 
 export default function SplitDashboard({
   stockData,
-  cryptoData,
   loading,
   error,
   lastUpdated,
@@ -50,7 +48,7 @@ export default function SplitDashboard({
 
       {/* Crypto Panel - Bottom on mobile, Right on desktop */}
       <div className="crypto-panel flex-1 bg-yellow-400 text-black p-5 md:p-10 flex flex-col justify-center items-center min-h-[50vh] md:min-h-screen">
-        {cryptoData && <CryptoPanel data={cryptoData} />}
+        <CryptoPanel />
       </div>
 
       {/* Footer - Hidden on mobile, shown on larger screens */}
