@@ -129,13 +129,13 @@ export default function CryptoPanel({
         </h2>
       </div>
 
-      {/* Market Cap - Large Display */}
+      {/* Market Cap */}
       <div className="mb-8">
-        <div className="text-black text-6xl font-bold mb-2 font-mono">
-          {formatCurrency(poolData.fdvUsd)}
-        </div>
-        <div className="text-black text-sm uppercase tracking-wide opacity-70">
+        <div className="text-black text-sm uppercase tracking-wide opacity-70 mb-4">
           Market Capitalization (FDV)
+        </div>
+        <div className="text-black text-8xl font-bold fugaz-one-regular">
+          {formatCurrency(poolData.fdvUsd)}
         </div>
       </div>
 

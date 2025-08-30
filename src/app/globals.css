@@ -124,3 +124,20 @@ body {
     padding: 15px;
   }
 }
+
+/* Google Fonts Classes */
+.inconsolata {
+  font-family: var(--font-inconsolata), monospace;
+}
+
+.bungee-regular {
+  font-family: var(--font-bungee), sans-serif;
+}
+
+.permanent-marker-regular {
+  font-family: var(--font-permanent-marker), cursive;
+}
+
+.fugaz-one-regular {
+  font-family: var(--font-fugaz-one), sans-serif;
+}
