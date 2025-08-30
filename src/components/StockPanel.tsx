@@ -27,17 +27,16 @@ export default function StockPanel({ data }: StockPanelProps) {
 
   return (
     <div className="text-center w-full max-w-md">
-      {/* Company Name */}
-      <div className="mb-8">
-        <h2 className="text-yellow-400 text-xl font-medium mb-2">
-          {data.name}
-        </h2>
-        <div className="text-gray-400 text-sm">{data.symbol}</div>
+      {/* Crypto Label */}
+      <div className="mb-4">
+        <div className="text-yellow-400 text-sm font-medium uppercase tracking-wide opacity-70 cursor-pointer px-2 py-1 rounded transition-all duration-200 select-none">
+          FLYY • NYSE
+        </div>
       </div>
 
       {/* Market Cap - Large Display */}
       <div className="mb-8">
-        <div className="text-yellow-400 text-6xl font-bold mb-2 font-mono">
+        <div className="text-yellow-400 text-6xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold fugaz-one-regular">
           {data.marketCap}
         </div>
         <div className="text-yellow-400 text-sm uppercase tracking-wide">

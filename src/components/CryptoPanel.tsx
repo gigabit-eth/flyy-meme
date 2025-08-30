@@ -131,11 +131,11 @@ export default function CryptoPanel({
 
       {/* Market Cap */}
       <div className="mb-8">
-        <div className="text-black text-sm uppercase tracking-wide opacity-70 mb-4">
-          Market Capitalization (FDV)
-        </div>
         <div className="text-black text-6xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold fugaz-one-regular">
           {formatCurrency(poolData.fdvUsd)}
+        </div>
+        <div className="text-black text-sm uppercase tracking-wide opacity-70 mb-4">
+          Market Capitalization (FDV)
         </div>
       </div>
 
@@ -188,7 +188,9 @@ export default function CryptoPanel({
               isBlinking ? "bg-black" : "bg-green-600"
             } transition-colors duration-200`}
           />
-          <span className="font-medium">LIVE</span>
+          <span className="font-medium uppercase tracking-wide">
+            LIVE Market Data
+          </span>
         </div>
       </div>
     </div>
