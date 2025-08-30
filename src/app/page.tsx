@@ -13,35 +13,33 @@ export default function Home() {
 
   const fetchStockData = async () => {
     try {
-      const response = await fetch("/api/stock/AAPL");
+      const response = await fetch("/api/stock/FLYY");
       const result: ApiResponse<StockQuote> = await response.json();
 
       if (result.success && result.data) {
         const stock = result.data;
         setStockData({
           type: "stock",
-          symbol: "SAVE",
-          name: "Spirit Airlines",
-          exchange: "NYSE",
-          marketCap: "$3.5T",
+          symbol: stock.symbol,
+          name: "Spirit Airlines Inc.",
+          exchange: "OTC",
+          marketCap: stock.marketCap && stock.marketCap > 0 ? `$${(stock.marketCap / 1000000).toFixed(0)}M` : "N/A",
           price: `$${stock.price.toFixed(2)}`,
           change: `$${stock.change.toFixed(2)}`,
           changePercent: `${stock.changePercent.toFixed(2)}`,
           dayHigh: `$${stock.dayHigh.toFixed(2)}`,
           dayLow: `$${stock.dayLow.toFixed(2)}`,
           volume: `${(stock.volume / 1000000).toFixed(1)}M`,
-          additionalInfo: `$${stock.dayLow.toFixed(2)}-$${stock.dayHigh.toFixed(
-            2
-          )}`,
+          additionalInfo: stock.fiftyTwoWeekRange || `$${stock.dayLow.toFixed(2)}-$${stock.dayHigh.toFixed(2)}`,
           isLive: true,
         });
       } else {
         // Show error state when API fails (rate limit, etc.)
         setStockData({
           type: "stock",
-          symbol: "SAVE",
-          name: "Apple Inc.",
-          exchange: "NYSE",
+          symbol: "FLYY",
+          name: "Spirit Airlines Inc.",
+          exchange: "OTC",
           marketCap: "N/A",
           price: "Rate Limited",
           change: "N/A",
@@ -58,9 +56,9 @@ export default function Home() {
       // Show error state for network errors
       setStockData({
         type: "stock",
-        symbol: "SAVE",
-        name: "Spirit Airlines",
-        exchange: "NYSE",
+        symbol: "FLYY",
+        name: "Spirit Airlines Inc.",
+        exchange: "OTC",
         marketCap: "N/A",
         price: "Error",
         change: "N/A",
@@ -144,7 +142,7 @@ export default function Home() {
     <div className="min-h-screen bg-black p-4 md:p-8">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-yellow-400 text-4xl font-bold mb-2">flyy.meme</h1>
+        <h1 className="text-yellow-400 text-4xl font-bold mb-2">#flipspirit</h1>
       </div>
 
       {/* Cards Container */}

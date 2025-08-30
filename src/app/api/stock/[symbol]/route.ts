@@ -10,7 +10,19 @@ export async function GET(
     const { symbol } = await params;
     console.log(`[Stock API] Fetching data for symbol: ${symbol}`);
 
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`;
+    const apiKey = process.env.FMP_API_KEY;
+    if (!apiKey) {
+      console.error("[Stock API] FMP_API_KEY not found in environment variables");
+      return NextResponse.json<ApiResponse<null>>(
+        {
+          success: false,
+          error: "API configuration error",
+        },
+        { status: 500 }
+      );
+    }
+
+    const url = `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${apiKey}`;
     console.log(`[Stock API] Requesting URL: ${url}`);
 
     const response = await axios.get(url);
@@ -20,26 +32,21 @@ export async function GET(
       JSON.stringify(response.data, null, 2)
     );
 
-    // Check if Yahoo Finance returned an error
-    if (response.data.chart.error) {
-      console.error(
-        "[Stock API] Yahoo Finance API error:",
-        response.data.chart.error
-      );
+    // Check if Financial Modeling Prep returned data
+    if (!response.data || !Array.isArray(response.data) || response.data.length === 0) {
+      console.error("[Stock API] No data found for symbol:", symbol);
       return NextResponse.json<ApiResponse<null>>(
         {
           success: false,
-          error:
-            response.data.chart.error.description ||
-            "Invalid symbol or no data found",
+          error: "Symbol not found or invalid",
         },
         { status: 404 }
       );
     }
 
-    const result = response.data.chart.result?.[0];
-    if (!result) {
-      console.error("[Stock API] No chart result found in response");
+    const stockData = response.data[0];
+    if (!stockData) {
+      console.error("[Stock API] Empty stock data received");
       return NextResponse.json<ApiResponse<null>>(
         {
           success: false,
@@ -49,41 +56,17 @@ export async function GET(
       );
     }
 
-    const meta = result.meta;
-    const quote = result.indicators?.quote?.[0];
-
-    if (!meta || !quote) {
-      console.error("[Stock API] Missing meta or quote data");
-      return NextResponse.json<ApiResponse<null>>(
-        {
-          success: false,
-          error: "Incomplete data for this symbol",
-        },
-        { status: 404 }
-      );
-    }
-
-    // Transform Yahoo Finance data to our StockQuote interface
-    const change = meta.regularMarketPrice - meta.previousClose;
-    const changePercent = (change / meta.previousClose) * 100;
-
+    // Transform Financial Modeling Prep data to our StockQuote interface
     const stockQuote: StockQuote = {
-      symbol: meta.symbol,
-      price: meta.regularMarketPrice,
-      change: change,
-      changePercent: parseFloat(changePercent.toFixed(2)),
-      dayHigh:
-        quote.high?.[quote.high.length - 1] || meta.regularMarketDayHigh || 0,
-      dayLow:
-        quote.low?.[quote.low.length - 1] || meta.regularMarketDayLow || 0,
-      volume:
-        quote.volume?.[quote.volume.length - 1] ||
-        meta.regularMarketVolume ||
-        0,
-      marketCap: 0, // Yahoo Finance chart API doesn't provide market cap
-      fiftyTwoWeekRange: `${meta.fiftyTwoWeekLow || 0} - ${
-        meta.fiftyTwoWeekHigh || 0
-      }`,
+      symbol: stockData.symbol,
+      price: stockData.price || 0,
+      change: stockData.change || 0,
+      changePercent: stockData.changesPercentage || 0,
+      dayHigh: stockData.dayHigh || 0,
+      dayLow: stockData.dayLow || 0,
+      volume: stockData.volume || 0,
+      marketCap: stockData.marketCap || 0,
+      fiftyTwoWeekRange: `${stockData.yearLow || 0} - ${stockData.yearHigh || 0}`,
     };
 
     return NextResponse.json<ApiResponse<StockQuote>>({
