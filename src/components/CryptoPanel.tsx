@@ -149,6 +149,18 @@ export default function CryptoPanel({
             )}
           </span>
         </div>
+        <div className="flex justify-between">
+          <span className="text-black opacity-70">1H BUYS:</span>
+          <span className="text-black font-mono font-medium">
+            {formatNumber(poolData.transactions.h1.buys)}
+          </span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-black opacity-70">1H SELLS:</span>
+          <span className="text-black font-mono font-medium">
+            {formatNumber(poolData.transactions.h1.sells)}
+          </span>
+        </div>
       </div>
 
       {/* Live Indicator - Bottom Right Style */}

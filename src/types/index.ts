@@ -59,10 +59,12 @@ export interface PoolData {
     h24: number;
   };
   transactions: {
-    h24: {
-      buys: number;
-      sells: number;
-    };
+    m5: { buys: number; sells: number; buyers: number; sellers: number };
+    m15: { buys: number; sells: number; buyers: number; sellers: number };
+    m30: { buys: number; sells: number; buyers: number; sellers: number };
+    h1: { buys: number; sells: number; buyers: number; sellers: number };
+    h6: { buys: number; sells: number; buyers: number; sellers: number };
+    h24: { buys: number; sells: number; buyers: number; sellers: number };
   };
   volumeUsd: {
     h24: number;
