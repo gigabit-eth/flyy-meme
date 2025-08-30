@@ -14,6 +14,7 @@ export default function CryptoPanel({
   const [poolData, setPoolData] = useState<PoolData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   // Fetch pool data from API
   useEffect(() => {
@@ -59,10 +60,10 @@ export default function CryptoPanel({
     return (
       <div className="text-center w-full max-w-md">
         <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded mb-4"></div>
-          <div className="h-6 bg-gray-200 rounded mb-8"></div>
-          <div className="h-16 bg-gray-200 rounded mb-8"></div>
-          <div className="h-12 bg-gray-200 rounded mb-8"></div>
+          <div className="h-4 bg-yellow-400 rounded mb-4"></div>
+          <div className="h-6 bg-yellow-400 rounded mb-8"></div>
+          <div className="h-16 bg-yellow-400 rounded mb-8"></div>
+          <div className="h-12 bg-yellow-400 rounded mb-8"></div>
         </div>
       </div>
     );
@@ -96,12 +97,28 @@ export default function CryptoPanel({
     return value.toLocaleString();
   };
 
+  const handleCopyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        "5ScfchcMYjFDGa2fwNZ1Z8wd5wuK15YYRPf2RBoMpump"
+      );
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy to clipboard:", err);
+    }
+  };
+
   return (
     <div className="text-center w-full max-w-md">
       {/* Crypto Label */}
       <div className="mb-4">
-        <div className="text-black text-sm font-medium uppercase tracking-wide opacity-70">
-          SOLANA • $FLYY
+        <div
+          className="text-black text-sm font-medium uppercase tracking-wide opacity-70 cursor-pointer px-2 py-1 rounded transition-all duration-200 select-none"
+          onClick={handleCopyToClipboard}
+          title="Click to copy token address"
+        >
+          {copied ? "COPIED!" : "$FLYY • SOLANA"}
         </div>
       </div>
 
