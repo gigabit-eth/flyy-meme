@@ -4,20 +4,41 @@ import { CardData } from "@/types";
 import StockPanel from "./StockPanel";
 import CryptoPanel from "./CryptoPanel";
 import BrandHeader from "./BrandHeader";
+import { motion, Variants } from "framer-motion";
+import { useState, useEffect } from "react";
 
 interface SplitDashboardProps {
   stockData: CardData | null;
   loading?: boolean;
   error?: string | null;
   lastUpdated?: string;
+  shouldSwapPanels?: boolean;
 }
 
 export default function SplitDashboard({
   stockData,
   loading,
   error,
-  lastUpdated,
+  shouldSwapPanels = false,
 }: SplitDashboardProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile breakpoint
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -36,19 +57,81 @@ export default function SplitDashboard({
     );
   }
 
+  // Animation variants for smooth transitions
+  const mobileVariants: Variants = {
+    top: {
+      y: 0,
+      x: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 300,
+        damping: 30
+      }
+    },
+    bottom: {
+      y: "100%",
+      x: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 300,
+        damping: 30
+      }
+    }
+  };
+
+  const desktopVariants: Variants = {
+    left: {
+      x: 0,
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 300,
+        damping: 30
+      }
+    },
+    right: {
+      x: "100%",
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        stiffness: 300,
+        damping: 30
+      }
+    }
+  };
+
+  const panelVariants = isMobile ? mobileVariants : desktopVariants;
+
   return (
     <div className="dashboard-container relative min-h-screen flex flex-col md:flex-row overflow-hidden">
       {/* Floating Brand Header */}
       <BrandHeader />
 
-      {/* Stock Panel - Top on mobile, Left on desktop */}
-      <div className="stock-panel flex-1 bg-black text-white p-5 md:p-10 flex flex-col justify-center items-center min-h-[50vh] md:min-h-screen">
-        {stockData && <StockPanel data={stockData} />}
-      </div>
+      {/* Animated Panel Container */}
+      <div className="relative flex-1 flex flex-col md:flex-row">
+        {/* Stock Panel */}
+        <motion.div
+          className={`stock-panel flex-1 bg-black text-white p-5 md:p-10 flex flex-col justify-center items-center min-h-[50vh] md:min-h-screen ${
+            isMobile ? 'absolute w-full h-1/2' : 'md:absolute md:w-1/2 md:h-full'
+          }`}
+          variants={panelVariants}
+          animate={isMobile ? (shouldSwapPanels ? "bottom" : "top") : (shouldSwapPanels ? "right" : "left")}
+          style={{ zIndex: shouldSwapPanels ? 2 : 1 }}
+        >
+          {stockData && <StockPanel data={stockData} />}
+        </motion.div>
 
-      {/* Crypto Panel - Bottom on mobile, Right on desktop */}
-      <div className="crypto-panel flex-1 bg-yellow-400 text-black p-5 md:p-10 flex flex-col justify-center items-center min-h-[50vh] md:min-h-screen">
-        <CryptoPanel />
+        {/* Crypto Panel */}
+        <motion.div
+          className={`crypto-panel flex-1 bg-yellow-400 text-black p-5 md:p-10 flex flex-col justify-center items-center min-h-[50vh] md:min-h-screen ${
+            isMobile ? 'absolute w-full h-1/2' : 'md:absolute md:w-1/2 md:h-full'
+          }`}
+          variants={panelVariants}
+          animate={isMobile ? (shouldSwapPanels ? "top" : "bottom") : (shouldSwapPanels ? "left" : "right")}
+          style={{ zIndex: shouldSwapPanels ? 1 : 2 }}
+        >
+          <CryptoPanel />
+        </motion.div>
       </div>
 
       {/* Footer - Hidden on mobile, shown on larger screens */}

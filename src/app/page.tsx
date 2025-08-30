@@ -2,13 +2,17 @@
 
 import { useState, useEffect } from "react";
 import SplitDashboard from "@/components/SplitDashboard";
-import { CardData, StockQuote, ApiResponse } from "@/types";
+import { CardData, StockQuote, ApiResponse, PoolData } from "@/types";
 
 export default function Home() {
   const [stockData, setStockData] = useState<CardData | null>(null);
+  const [cryptoData, setCryptoData] = useState<PoolData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>("");
+  const [shouldSwapPanels, setShouldSwapPanels] = useState(false);
+
+
 
   const fetchStockData = async () => {
     try {
@@ -71,13 +75,46 @@ export default function Home() {
     }
   };
 
+  const fetchCryptoData = async () => {
+    try {
+      const response = await fetch("/api/crypto/pools/6eGhaAmcMJGUWgTxKDHY3opNmdXDZKxgbKt3P2uNR2m8");
+      const result: ApiResponse<PoolData> = await response.json();
 
+      if (result.success && result.data) {
+        setCryptoData(result.data);
+      } else {
+        setCryptoData(null);
+      }
+    } catch (err) {
+      console.error("Failed to fetch crypto data:", err);
+      setCryptoData(null);
+    }
+  };
+
+  const compareMarketCaps = () => {
+    if (stockData && cryptoData) {
+      // Extract numeric market cap from stock data (remove $ and M, convert to number)
+      const stockMarketCapStr = stockData.marketCap.replace(/[$M]/g, '');
+      const stockMarketCapNum = parseFloat(stockMarketCapStr);
+      
+      // Skip comparison if stock market cap is invalid (N/A, Error, etc.)
+      if (isNaN(stockMarketCapNum) || stockMarketCapNum <= 0) {
+        return;
+      }
+      
+      // Crypto market cap is in USD, convert to millions
+      const cryptoMarketCapNum = cryptoData.fdvUsd / 1000000;
+      
+      // If crypto market cap exceeds stock market cap, swap panels
+      setShouldSwapPanels(cryptoMarketCapNum > stockMarketCapNum);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        await fetchStockData();
+        await Promise.all([fetchStockData(), fetchCryptoData()]);
         setLastUpdated(new Date().toLocaleTimeString());
       } catch (err) {
         setError("Failed to load data");
@@ -93,12 +130,18 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  // Compare market caps whenever data changes
+  useEffect(() => {
+    compareMarketCaps();
+  }, [stockData, cryptoData]);
+
   return (
     <SplitDashboard 
       stockData={stockData}
       loading={loading}
       error={error}
       lastUpdated={lastUpdated}
+      shouldSwapPanels={shouldSwapPanels}
     />
   );
 }
