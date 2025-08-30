@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import StockCard from "@/components/StockCard";
+import SplitDashboard from "@/components/SplitDashboard";
 import { CardData, StockQuote, CryptoData, ApiResponse } from "@/types";
 
 export default function Home() {
@@ -120,43 +120,13 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-yellow-400 text-xl">
-          Loading flyy.meme dashboard...
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-red-400 text-xl">{error}</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-black p-4 md:p-8">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-yellow-400 text-4xl font-bold mb-2">#flipspirit</h1>
-      </div>
-
-      {/* Cards Container */}
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {stockData && <StockCard data={stockData} className="w-full" />}
-          {cryptoData && <StockCard data={cryptoData} className="w-full" />}
-        </div>
-
-        {/* Footer */}
-        <div className="text-center text-gray-400 text-sm">
-          Last updated: {lastUpdated} • Data provided for demonstration
-        </div>
-      </div>
-    </div>
+    <SplitDashboard 
+      stockData={stockData}
+      cryptoData={cryptoData}
+      loading={loading}
+      error={error}
+      lastUpdated={lastUpdated}
+    />
   );
 }
