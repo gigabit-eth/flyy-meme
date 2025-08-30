@@ -115,8 +115,8 @@ export default function Home() {
 
     fetchData();
 
-    // Refresh data every 30 seconds
-    const interval = setInterval(fetchData, 30000);
+    // Refresh data every 15 minutes
+    const interval = setInterval(fetchData, 900000);
     return () => clearInterval(interval);
   }, []);
 

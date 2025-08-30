@@ -1,4 +1,4 @@
-// Stock data interfaces for Yahoo Finance API
+// Stock data interfaces for Financial Modeling Prep API
 export interface StockQuote {
   symbol: string;
   price: number;
@@ -7,7 +7,14 @@ export interface StockQuote {
   dayHigh: number;
   dayLow: number;
   volume: number;
+  avgVolume: number;
   marketCap: number;
+  pe: number | null;
+  eps: number | null;
+  high: number;
+  low: number;
+  open: number;
+  previousClose: number;
   fiftyTwoWeekRange: string;
 }
 

@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { StockQuote, ApiResponse } from "@/types";
-import axios from "axios";
+import { NextRequest, NextResponse } from 'next/server';
+import { getCacheRefreshService } from '../../../../utils/cacheRefreshService';
+import { StockQuote } from '../../../../types';
 
 export async function GET(
   request: NextRequest,
@@ -8,101 +8,84 @@ export async function GET(
 ) {
   try {
     const { symbol } = await params;
-    console.log(`[Stock API] Fetching data for symbol: ${symbol}`);
-
-    const apiKey = process.env.FMP_API_KEY;
-    if (!apiKey) {
-      console.error("[Stock API] FMP_API_KEY not found in environment variables");
-      return NextResponse.json<ApiResponse<null>>(
-        {
-          success: false,
-          error: "API configuration error",
-        },
-        { status: 500 }
-      );
-    }
-
-    const url = `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${apiKey}`;
-    console.log(`[Stock API] Requesting URL: ${url}`);
-
-    const response = await axios.get(url);
-    console.log(`[Stock API] Response status: ${response.status}`);
-    console.log(
-      "[Stock API] Raw API response:",
-      JSON.stringify(response.data, null, 2)
-    );
-
-    // Check if Financial Modeling Prep returned data
-    if (!response.data || !Array.isArray(response.data) || response.data.length === 0) {
-      console.error("[Stock API] No data found for symbol:", symbol);
-      return NextResponse.json<ApiResponse<null>>(
-        {
-          success: false,
-          error: "Symbol not found or invalid",
-        },
-        { status: 404 }
-      );
-    }
-
-    const stockData = response.data[0];
-    if (!stockData) {
-      console.error("[Stock API] Empty stock data received");
-      return NextResponse.json<ApiResponse<null>>(
-        {
-          success: false,
-          error: "No data available for this symbol",
-        },
-        { status: 404 }
-      );
-    }
-
-    // Transform Financial Modeling Prep data to our StockQuote interface
-    const stockQuote: StockQuote = {
-      symbol: stockData.symbol,
-      price: stockData.price || 0,
-      change: stockData.change || 0,
-      changePercent: stockData.changesPercentage || 0,
-      dayHigh: stockData.dayHigh || 0,
-      dayLow: stockData.dayLow || 0,
-      volume: stockData.volume || 0,
-      marketCap: stockData.marketCap || 0,
-      fiftyTwoWeekRange: `${stockData.yearLow || 0} - ${stockData.yearHigh || 0}`,
-    };
-
-    return NextResponse.json<ApiResponse<StockQuote>>({
-      success: true,
-      data: stockQuote,
-    });
-  } catch (error: unknown) {
-    console.error("Stock API error:", error);
-
-    // Handle axios errors specifically
-    if (axios.isAxiosError(error) && error.response) {
-      const status = error.response.status;
-      if (status === 404) {
-        return NextResponse.json<ApiResponse<null>>(
-          {
-            success: false,
-            error: "Symbol not found or invalid",
-          },
-          { status: 404 }
-        );
-      } else if (status === 429) {
-        return NextResponse.json<ApiResponse<null>>(
-          {
-            success: false,
-            error: "Rate limit exceeded, please try again later",
+    const cacheRefreshService = getCacheRefreshService();
+    
+    // Check for force refresh parameter
+    const url = new URL(request.url);
+    const forceRefresh = url.searchParams.get('refresh') === 'true';
+    
+    // Get stock data using the intelligent caching and rate limiting framework
+    const result = await cacheRefreshService.getStockData(symbol, forceRefresh);
+    
+    if (!result.success) {
+      if (result.rateLimitReached) {
+        return NextResponse.json(
+          { 
+            error: 'API rate limit reached. Please try again later.',
+            rateLimitReached: true
           },
           { status: 429 }
         );
       }
+      
+      return NextResponse.json(
+        { error: result.error || 'Failed to fetch stock data' },
+        { status: 500 }
+      );
+    }
+    
+    // Add metadata to the response
+    const response = {
+      ...result.data,
+      _metadata: {
+        fromCache: result.fromCache,
+        rateLimitReached: result.rateLimitReached || false,
+        timestamp: new Date().toISOString()
+      }
+    };
+
+    // Set appropriate cache headers
+    const headers = new Headers();
+    if (result.fromCache) {
+      headers.set('X-Cache-Status', 'HIT');
+      headers.set('Cache-Control', 'public, max-age=60'); // Cache for 1 minute
+    } else {
+      headers.set('X-Cache-Status', 'MISS');
+      headers.set('Cache-Control', 'public, max-age=30'); // Cache fresh data for 30 seconds
+    }
+    
+    if (result.rateLimitReached) {
+      headers.set('X-Rate-Limit-Reached', 'true');
     }
 
-    return NextResponse.json<ApiResponse<null>>(
-      {
-        success: false,
-        error: "Failed to fetch stock data",
-      },
+    return NextResponse.json(response, { headers });
+  } catch (error) {
+    console.error('Error in stock API route:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+// Add a new endpoint to get cache and rate limiter statistics
+export async function OPTIONS(
+  request: NextRequest,
+  { params }: { params: Promise<{ symbol: string }> }
+) {
+  try {
+    const { symbol } = await params;
+    const cacheRefreshService = getCacheRefreshService();
+    const stats = cacheRefreshService.getStats();
+    
+    return NextResponse.json({
+      symbol,
+      stats
+    });
+  } catch (error) {
+    console.error('Error getting stats:', error);
+    return NextResponse.json(
+      { error: 'Failed to get statistics' },
       { status: 500 }
     );
   }
