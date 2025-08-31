@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import SplitDashboard from "@/components/SplitDashboard";
 import { CardData, StockQuote, ApiResponse, PoolData } from "@/types";
+import Footer from "@/components/Footer";
+import { div } from "framer-motion/client";
+import { isMarketHours } from "@/utils/marketHours";
 
 export default function Home() {
   const [stockData, setStockData] = useState<CardData | null>(null);
@@ -11,8 +14,6 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [shouldSwapPanels, setShouldSwapPanels] = useState(false);
-
-
 
   const fetchStockData = async () => {
     try {
@@ -26,15 +27,20 @@ export default function Home() {
           symbol: stock.symbol,
           name: "Spirit Airlines Inc.",
           exchange: "OTC",
-          marketCap: stock.marketCap && stock.marketCap > 0 ? `$${(stock.marketCap / 1000000).toFixed(0)}M` : "N/A",
+          marketCap:
+            stock.marketCap && stock.marketCap > 0
+              ? `$${(stock.marketCap / 1000000).toFixed(0)}M`
+              : "N/A",
           price: `$${stock.price.toFixed(2)}`,
           change: `$${stock.change.toFixed(2)}`,
           changePercent: `${stock.changePercent.toFixed(2)}`,
           dayHigh: `$${stock.dayHigh.toFixed(2)}`,
           dayLow: `$${stock.dayLow.toFixed(2)}`,
           volume: `${(stock.volume / 1000000).toFixed(1)}M`,
-          additionalInfo: stock.fiftyTwoWeekRange || `$${stock.dayLow.toFixed(2)}-$${stock.dayHigh.toFixed(2)}`,
-          isLive: true,
+          additionalInfo:
+            stock.fiftyTwoWeekRange ||
+            `$${stock.dayLow.toFixed(2)}-$${stock.dayHigh.toFixed(2)}`,
+          isLive: isMarketHours(),
         });
       } else {
         // Show error state when API fails (rate limit, etc.)
@@ -77,7 +83,9 @@ export default function Home() {
 
   const fetchCryptoData = async () => {
     try {
-      const response = await fetch("/api/crypto/pools/6eGhaAmcMJGUWgTxKDHY3opNmdXDZKxgbKt3P2uNR2m8");
+      const response = await fetch(
+        "/api/crypto/pools/6eGhaAmcMJGUWgTxKDHY3opNmdXDZKxgbKt3P2uNR2m8"
+      );
       const result: ApiResponse<PoolData> = await response.json();
 
       if (result.success && result.data) {
@@ -94,17 +102,17 @@ export default function Home() {
   const compareMarketCaps = () => {
     if (stockData && cryptoData) {
       // Extract numeric market cap from stock data (remove $ and M, convert to number)
-      const stockMarketCapStr = stockData.marketCap.replace(/[$M]/g, '');
+      const stockMarketCapStr = stockData.marketCap.replace(/[$M]/g, "");
       const stockMarketCapNum = parseFloat(stockMarketCapStr);
-      
+
       // Skip comparison if stock market cap is invalid (N/A, Error, etc.)
       if (isNaN(stockMarketCapNum) || stockMarketCapNum <= 0) {
         return;
       }
-      
+
       // Crypto market cap is in USD, convert to millions
       const cryptoMarketCapNum = cryptoData.fdvUsd / 1000000;
-      
+
       // If crypto market cap exceeds stock market cap, swap panels
       setShouldSwapPanels(cryptoMarketCapNum > stockMarketCapNum);
     }
@@ -136,12 +144,15 @@ export default function Home() {
   }, [stockData, cryptoData]);
 
   return (
-    <SplitDashboard 
-      stockData={stockData}
-      loading={loading}
-      error={error}
-      lastUpdated={lastUpdated}
-      shouldSwapPanels={shouldSwapPanels}
-    />
+    <div>
+      <SplitDashboard
+        stockData={stockData}
+        loading={loading}
+        error={error}
+        lastUpdated={lastUpdated}
+        shouldSwapPanels={shouldSwapPanels}
+      />
+      <Footer />
+    </div>
   );
 }

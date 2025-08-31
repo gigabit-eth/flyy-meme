@@ -26,7 +26,7 @@ export default function StockPanel({ data }: StockPanelProps) {
   const changeSign = isPositive ? "+" : "";
 
   return (
-    <div className="text-center w-full max-w-md">
+    <div className="text-center w-full max-w-md p-4 mb-2">
       {/* Crypto Label */}
       <div className="mb-4">
         <div className="text-yellow-400 text-sm font-medium uppercase tracking-wide opacity-70 cursor-pointer px-2 py-1 rounded transition-all duration-200 select-none">
@@ -60,15 +60,21 @@ export default function StockPanel({ data }: StockPanelProps) {
       <div className="space-y-4 text-base sm:text-lg md:text-xl mb-8">
         <div className="flex justify-between">
           <span className="text-yellow-400 opacity-70">Day High:</span>
-          <span className="text-yellow-400 font-mono font-semibold">{data.dayHigh}</span>
+          <span className="text-yellow-400 font-mono font-semibold">
+            {data.dayHigh}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="text-yellow-400 opacity-70">Day Low:</span>
-          <span className="text-yellow-400 font-mono font-semibold">{data.dayLow}</span>
+          <span className="text-yellow-400 font-mono font-semibold">
+            {data.dayLow}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="text-yellow-400 opacity-70">Volume:</span>
-          <span className="text-yellow-400 font-mono font-semibold">{data.volume}</span>
+          <span className="text-yellow-400 font-mono font-semibold">
+            {data.volume}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="text-yellow-400 opacity-70">52w Range:</span>

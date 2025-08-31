@@ -110,7 +110,7 @@ export default function CryptoPanel({
   };
 
   return (
-    <div className="text-center w-full max-w-md">
+    <div className="text-center w-full max-w-md p-4 mb-2">
       {/* Crypto Label */}
       <div className="mb-4">
         <div
@@ -118,15 +118,8 @@ export default function CryptoPanel({
           onClick={handleCopyToClipboard}
           title="Click to copy token address"
         >
-          {copied ? "COPIED!" : "$FLYY • SOLANA"}
+          {copied ? "COPIED!" : "5Scfch.....pump"}
         </div>
-      </div>
-
-      {/* Company Name */}
-      <div className="mb-8">
-        <h2 className="text-black text-xl font-medium">
-          {poolData.baseToken.name}
-        </h2>
       </div>
 
       {/* Market Cap */}
@@ -135,7 +128,7 @@ export default function CryptoPanel({
           {formatCurrency(poolData.fdvUsd)}
         </div>
         <div className="text-black text-sm uppercase tracking-wide opacity-70 mb-4">
-          Market Capitalization (FDV)
+          Market Capitalization
         </div>
       </div>
 
