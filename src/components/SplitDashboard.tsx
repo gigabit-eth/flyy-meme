@@ -130,7 +130,7 @@ export default function SplitDashboard({
         <motion.div
           className={`stock-panel flex-1 bg-black text-white p-5 md:p-10 flex flex-col justify-center items-center min-h-[50vh] md:min-h-screen ${
             isMobile
-              ? "absolute w-full h-1/2"
+              ? "absolute w-full min-h-[50vh] max-h-[50vh] overflow-y-auto"
               : "md:absolute md:w-1/2 md:h-full"
           }`}
           variants={panelVariants}
@@ -152,7 +152,7 @@ export default function SplitDashboard({
         <motion.div
           className={`crypto-panel flex-1 bg-yellow-400 text-black p-5 md:p-10 flex flex-col justify-center items-center min-h-[50vh] md:min-h-screen ${
             isMobile
-              ? "absolute w-full h-1/2"
+              ? "absolute w-full min-h-[50vh] max-h-[50vh] overflow-y-auto"
               : "md:absolute md:w-1/2 md:h-full"
           }`}
           variants={panelVariants}
