@@ -79,7 +79,7 @@ export default function Footer() {
             </a>
           </span>
         </p>
-        <p
+        {/* <p
           className="mt-4 text-center text-sm/6 text-gray-600 md:order-1 md:mt-0 dark:text-gray-400"
           onClick={handleCopyToClipboard}
           role="button"
@@ -90,7 +90,7 @@ export default function Footer() {
             {copied ? "COPIED!" : "9eL...4Sh4"}
           </span>{" "}
           🙏
-        </p>
+        </p> */}
       </div>
     </footer>
   );
