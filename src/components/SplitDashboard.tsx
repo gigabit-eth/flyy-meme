@@ -128,10 +128,10 @@ export default function SplitDashboard({
       <div className="relative flex-1 flex flex-col md:flex-row">
         {/* Stock Panel */}
         <motion.div
-          className={`stock-panel flex-1 bg-black text-white p-5 md:p-10 flex flex-col justify-center items-center min-h-[50vh] md:min-h-screen ${
+          className={`stock-panel flex-1 bg-black text-white p-5 md:p-10 flex flex-col justify-center items-center pb-8 md:pb-10 ${
             isMobile
-              ? "absolute w-full min-h-[50vh] max-h-[50vh] overflow-y-auto"
-              : "md:absolute md:w-1/2 md:h-full"
+              ? "absolute w-full h-1/2"
+              : "md:absolute md:w-1/2 md:h-full md:min-h-screen"
           }`}
           variants={panelVariants}
           animate={
@@ -150,9 +150,9 @@ export default function SplitDashboard({
 
         {/* Crypto Panel */}
         <motion.div
-          className={`crypto-panel flex-1 bg-yellow-400 text-black p-5 md:p-10 flex flex-col justify-center items-center min-h-[50vh] md:min-h-screen ${
+          className={`crypto-panel flex-1 bg-yellow-400 text-black p-5 md:p-10 flex flex-col justify-center items-center pb-8 md:pb-10 ${
             isMobile
-              ? "absolute w-full min-h-[50vh] max-h-[50vh] overflow-y-auto"
+              ? "absolute w-full h-1/2"
               : "md:absolute md:w-1/2 md:h-full"
           }`}
           variants={panelVariants}
