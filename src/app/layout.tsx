@@ -38,6 +38,13 @@ const permanentMarker = Permanent_Marker({
 export const metadata: Metadata = {
   title: "flyy.meme",
   description: "we flippin the stock",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: "cover"
+  },
 };
 
 export default function RootLayout({

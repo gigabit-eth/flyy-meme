@@ -120,7 +120,12 @@ export default function SplitDashboard({
   const panelVariants = isMobile ? mobileVariants : desktopVariants;
 
   return (
-    <div className="dashboard-container relative min-h-screen flex flex-col md:flex-row overflow-hidden">
+    <div className="dashboard-container relative min-h-screen flex flex-col md:flex-row overflow-hidden" style={{
+      paddingTop: 'env(safe-area-inset-top)',
+      paddingBottom: 'env(safe-area-inset-bottom)',
+      paddingLeft: 'env(safe-area-inset-left)',
+      paddingRight: 'env(safe-area-inset-right)'
+    }}>
       {/* Floating Brand Header */}
       <BrandHeader />
 
@@ -136,8 +141,10 @@ export default function SplitDashboard({
           style={{
             zIndex: shouldSwapPanels ? 2 : 1,
             ...(isMobile && {
-              paddingBottom: '2rem',
-              marginBottom: '1rem'
+              paddingBottom: 'calc(2rem + env(safe-area-inset-bottom))',
+              marginBottom: '1rem',
+              paddingLeft: 'calc(1.25rem + env(safe-area-inset-left))',
+              paddingRight: 'calc(1.25rem + env(safe-area-inset-right))'
             })
           }}
           variants={panelVariants}
@@ -165,8 +172,10 @@ export default function SplitDashboard({
           style={{
             zIndex: shouldSwapPanels ? 1 : 2,
             ...(isMobile && {
-              paddingBottom: '2rem',
-              marginBottom: '1rem'
+              paddingBottom: 'calc(2rem + env(safe-area-inset-bottom))',
+              marginBottom: '1rem',
+              paddingLeft: 'calc(1.25rem + env(safe-area-inset-left))',
+              paddingRight: 'calc(1.25rem + env(safe-area-inset-right))'
             })
           }}
           variants={panelVariants}

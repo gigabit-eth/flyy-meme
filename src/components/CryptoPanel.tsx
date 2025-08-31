@@ -112,7 +112,7 @@ export default function CryptoPanel({
   return (
     <div className="text-center w-full max-w-md p-4 mb-2">
       {/* Crypto Label */}
-      <div className="mb-4 mx-4 mt-4">
+      <div className="mb-4 mx-8 mt-8">
         <div
           className="text-black text-sm font-medium uppercase tracking-wide opacity-70 cursor-pointer px-2 py-1 rounded transition-all duration-200 select-none"
           onClick={handleCopyToClipboard}
