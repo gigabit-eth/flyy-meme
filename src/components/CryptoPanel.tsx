@@ -30,7 +30,7 @@ export default function CryptoPanel({
         } else {
           setError(result.error || "Failed to fetch pool data");
         }
-      } catch (err) {
+      } catch {
         setError("Network error occurred");
       } finally {
         setLoading(false);

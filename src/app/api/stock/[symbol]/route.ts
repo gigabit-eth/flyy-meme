@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCacheRefreshService } from "../../../../utils/cacheRefreshService";
-import { StockQuote } from "../../../../types";
 
 export async function GET(
   request: NextRequest,

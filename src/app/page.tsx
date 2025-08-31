@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import SplitDashboard from "@/components/SplitDashboard";
 import { CardData, StockQuote, ApiResponse, PoolData } from "@/types";
 import Footer from "@/components/Footer";
-import { div } from "framer-motion/client";
 import { isMarketHours } from "@/utils/marketHours";
 
 export default function Home() {
@@ -99,7 +98,7 @@ export default function Home() {
     }
   };
 
-  const compareMarketCaps = () => {
+  const compareMarketCaps = useCallback(() => {
     if (stockData && cryptoData) {
       // Extract numeric market cap from stock data (remove $ and M, convert to number)
       const stockMarketCapStr = stockData.marketCap.replace(/[$M]/g, "");
@@ -116,7 +115,7 @@ export default function Home() {
       // If crypto market cap exceeds stock market cap, swap panels
       setShouldSwapPanels(cryptoMarketCapNum > stockMarketCapNum);
     }
-  };
+  }, [stockData, cryptoData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -124,7 +123,7 @@ export default function Home() {
       try {
         await Promise.all([fetchStockData(), fetchCryptoData()]);
         setLastUpdated(new Date().toLocaleTimeString());
-      } catch (err) {
+      } catch {
         setError("Failed to load data");
       } finally {
         setLoading(false);
@@ -141,7 +140,7 @@ export default function Home() {
   // Compare market caps whenever data changes
   useEffect(() => {
     compareMarketCaps();
-  }, [stockData, cryptoData]);
+  }, [stockData, cryptoData, compareMarketCaps]);
 
   return (
     <div>

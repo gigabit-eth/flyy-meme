@@ -28,7 +28,6 @@ class CacheRefreshService {
     // Check if we have valid cached data
     const cachedData = this.stockCache.get(normalizedSymbol);
     const hasValidCache = this.stockCache.has(normalizedSymbol);
-    const isStale = this.stockCache.isStale(normalizedSymbol);
 
     // Return cached data if valid and not forcing refresh
     if (hasValidCache && !forceRefresh && !this.shouldRefreshNow(normalizedSymbol)) {
