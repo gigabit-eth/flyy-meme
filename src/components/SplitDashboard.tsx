@@ -130,9 +130,16 @@ export default function SplitDashboard({
         <motion.div
           className={`stock-panel flex-1 bg-black text-white p-5 md:p-10 flex flex-col justify-center items-center pb-8 md:pb-10 ${
             isMobile
-              ? "absolute w-full h-1/2"
+              ? "absolute w-full h-1/2 mb-4"
               : "md:absolute md:w-1/2 md:h-full md:min-h-screen"
           }`}
+          style={{
+            zIndex: shouldSwapPanels ? 2 : 1,
+            ...(isMobile && {
+              paddingBottom: '2rem',
+              marginBottom: '1rem'
+            })
+          }}
           variants={panelVariants}
           animate={
             isMobile
@@ -143,7 +150,7 @@ export default function SplitDashboard({
               ? "right"
               : "left"
           }
-          style={{ zIndex: shouldSwapPanels ? 2 : 1 }}
+
         >
           {stockData && <StockPanel data={stockData} />}
         </motion.div>
@@ -152,9 +159,16 @@ export default function SplitDashboard({
         <motion.div
           className={`crypto-panel flex-1 bg-yellow-400 text-black p-5 md:p-10 flex flex-col justify-center items-center pb-8 md:pb-10 ${
             isMobile
-              ? "absolute w-full h-1/2"
+              ? "absolute w-full h-1/2 mb-4"
               : "md:absolute md:w-1/2 md:h-full"
           }`}
+          style={{
+            zIndex: shouldSwapPanels ? 1 : 2,
+            ...(isMobile && {
+              paddingBottom: '2rem',
+              marginBottom: '1rem'
+            })
+          }}
           variants={panelVariants}
           animate={
             isMobile
@@ -165,7 +179,7 @@ export default function SplitDashboard({
               ? "left"
               : "right"
           }
-          style={{ zIndex: shouldSwapPanels ? 1 : 2 }}
+
         >
           <CryptoPanel />
         </motion.div>
